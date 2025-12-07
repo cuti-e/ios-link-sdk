@@ -34,11 +34,13 @@ import CutiELink
 @main
 struct MyApp: App {
     init() {
-        CutiELink.configure(apiKey: "your-api-key")
+        CutiELink.configure(appId: "your_app_id")
     }
     // ...
 }
 ```
+
+Get your App ID from [admin.cuti-e.com](https://admin.cuti-e.com) under Settings > Apps.
 
 ### 2. Add "Open in Feedback App" Button
 
@@ -67,8 +69,8 @@ That's it! Two lines of code.
 ### Configuration
 
 ```swift
-// Required: Set your API key
-CutiELink.configure(apiKey: "your-key")
+// Required: Set your App ID
+CutiELink.configure(appId: "your_app_id")
 
 // Optional: Use sandbox for testing
 CutiELink.useSandbox()
