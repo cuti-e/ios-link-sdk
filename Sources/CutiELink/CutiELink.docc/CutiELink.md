@@ -32,7 +32,7 @@ dependencies: [
 
 ### Configuration
 
-Configure once at app launch:
+Configure once at app launch with your App ID from the admin dashboard:
 
 ```swift
 import CutiELink
@@ -40,7 +40,7 @@ import CutiELink
 @main
 struct MyApp: App {
     init() {
-        CutiELink.configure(apiKey: "your-api-key")
+        CutiELink.configure(appId: "your_app_id")
     }
 
     var body: some Scene {
@@ -50,6 +50,8 @@ struct MyApp: App {
     }
 }
 ```
+
+Get your App ID from [admin.cuti-e.com](https://admin.cuti-e.com) under Settings > Apps.
 
 ### Open the Feedback App
 
