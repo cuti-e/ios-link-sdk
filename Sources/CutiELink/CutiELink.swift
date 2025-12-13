@@ -53,10 +53,10 @@ public final class CutiELink {
     /// Open the Cuti-E Feedback App
     ///
     /// Generates a link token and opens the Feedback App via deep link.
-    /// If the Feedback App isn't installed, opens the App Store.
+    /// If the Feedback App isn't installed, throws `CutiELinkError.feedbackAppNotInstalled`.
     ///
     /// - Returns: True if the app was opened successfully
-    /// - Throws: CutiELinkError if configuration is missing or API fails
+    /// - Throws: CutiELinkError if configuration is missing, API fails, or app not installed
     @MainActor
     @discardableResult
     public static func openFeedbackApp() async throws -> Bool {
