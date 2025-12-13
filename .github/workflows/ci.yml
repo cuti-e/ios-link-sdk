@@ -24,11 +24,11 @@ jobs:
       - name: Show Xcode version
         run: xcodebuild -version
 
-      - name: Build for iOS
+      - name: Build for Mac Catalyst
         run: |
           xcodebuild build \
             -scheme CutiELink \
-            -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
+            -destination 'platform=macOS,variant=Mac Catalyst' \
             -skipPackagePluginValidation
 
   docs:
@@ -47,7 +47,7 @@ jobs:
         run: |
           xcodebuild docbuild \
             -scheme CutiELink \
-            -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
+            -destination 'platform=macOS,variant=Mac Catalyst' \
             -derivedDataPath .build
 
       # Note: Upload disabled - DocC generates filenames with colons (Swift function signatures)
