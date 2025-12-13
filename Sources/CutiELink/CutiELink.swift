@@ -94,11 +94,8 @@ public final class CutiELink {
             await UIApplication.shared.open(deepLink)
             return true
         } else {
-            // Feedback App not installed - open App Store
-            if let appStoreURL = URL(string: "https://apps.apple.com/app/cuti-e-feedback/id0000000000") {
-                await UIApplication.shared.open(appStoreURL)
-            }
-            return false
+            // Feedback App not installed - throw error so calling app can handle gracefully
+            throw CutiELinkError.feedbackAppNotInstalled
         }
     }
 
