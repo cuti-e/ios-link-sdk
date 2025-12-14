@@ -70,10 +70,40 @@ public final class CutiELink {
         return UIApplication.shared.canOpenURL(url)
     }
 
+    /// Generate a link code and attempt to open the Feedback App
+    ///
+    /// This method always returns a result with the link code, even if the deep link fails.
+    /// Use this when you want to show a manual code fallback.
+    ///
+    /// - Returns: CutiELinkResult containing the link code and whether the app was opened
+    /// - Throws: CutiELinkError if configuration is missing or API fails
+    ///
+    /// Usage:
+    /// ```swift
+    /// let result = try await CutiELink.generateLinkCode()
+    /// if !result.didOpenApp {
+    ///     // Show manual code to user
+    ///     showAlert("Enter this code in Feedback App: \(result.shortCode)")
+    /// }
+    /// ```
+    @MainActor
+    public static func generateLinkCode() async throws -> CutiELinkResult {
+        try await shared.generateLinkCodeInternal()
+    }
+
     // MARK: - Private Implementation
 
     @MainActor
     private func openFeedbackApp() async throws -> Bool {
+        let result = try await generateLinkCodeInternal()
+        if !result.didOpenApp {
+            throw CutiELinkError.feedbackAppNotInstalled
+        }
+        return true
+    }
+
+    @MainActor
+    private func generateLinkCodeInternal() async throws -> CutiELinkResult {
         // Must have either App ID or API key configured
         guard appId != nil || apiKey != nil else {
             throw CutiELinkError.notConfigured
@@ -85,18 +115,18 @@ public final class CutiELink {
         // Request link token from API
         let token = try await generateToken(deviceId: deviceId)
 
-        // Open deep link
+        // Try to open deep link
         guard let deepLink = URL(string: "cutie://link?token=\(token)") else {
             throw CutiELinkError.invalidDeepLink
         }
 
+        var didOpenApp = false
         if UIApplication.shared.canOpenURL(deepLink) {
             await UIApplication.shared.open(deepLink)
-            return true
-        } else {
-            // Feedback App not installed - throw error so calling app can handle gracefully
-            throw CutiELinkError.feedbackAppNotInstalled
+            didOpenApp = true
         }
+
+        return CutiELinkResult(linkCode: token, didOpenApp: didOpenApp)
     }
 
     private func generateToken(deviceId: String) async throws -> String {
@@ -156,6 +186,22 @@ public final class CutiELink {
         let newId = UUID().uuidString
         UserDefaults.standard.set(newId, forKey: key)
         return newId
+    }
+}
+
+// MARK: - Link Result
+
+/// Result of attempting to open the Feedback App
+public struct CutiELinkResult {
+    /// The generated link code (can be entered manually in Feedback App)
+    public let linkCode: String
+
+    /// Whether the Feedback App was opened via deep link
+    public let didOpenApp: Bool
+
+    /// A short, user-friendly version of the code (first 8 characters)
+    public var shortCode: String {
+        String(linkCode.prefix(8)).uppercased()
     }
 }
 
