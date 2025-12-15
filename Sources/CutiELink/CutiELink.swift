@@ -22,6 +22,7 @@ public final class CutiELink {
     private var apiKey: String?
     private var appId: String?
     private var baseURL = "https://api.cuti-e.com"
+    private let deviceIdLock = NSLock()
 
     /// Configure CutiELink with your App ID (recommended)
     /// - Parameters:
@@ -179,6 +180,9 @@ public final class CutiELink {
     }
 
     private func getDeviceId() -> String {
+        deviceIdLock.lock()
+        defer { deviceIdLock.unlock() }
+
         let key = "com.cutie.link.deviceId"
         if let existing = UserDefaults.standard.string(forKey: key) {
             return existing
