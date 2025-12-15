@@ -29,6 +29,12 @@ public final class CutiELink {
     ///   - appId: Your App ID from the admin dashboard (created in Settings > Apps)
     ///   - apiURL: Optional custom API URL (defaults to production)
     public static func configure(appId: String, apiURL: String = "https://api.cuti-e.com") {
+        // Enforce HTTPS for security and validate URL format
+        guard let url = URL(string: apiURL), url.scheme?.lowercased() == "https" else {
+            NSLog("[CutiELink] ERROR: apiURL must be a valid HTTPS URL. Configuration rejected.")
+            return
+        }
+
         shared.appId = appId
         shared.apiKey = nil
         shared.baseURL = apiURL
