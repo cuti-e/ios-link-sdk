@@ -185,7 +185,9 @@ public final class CutiELink {
         return token
     }
 
-    private func getDeviceId() -> String {
+    /// Get or create a persistent device ID
+    /// Internal for testing - generates UUID on first call, persists to UserDefaults
+    internal func getDeviceId() -> String {
         deviceIdLock.lock()
         defer { deviceIdLock.unlock() }
 
