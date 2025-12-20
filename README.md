@@ -112,6 +112,10 @@ To check if the Feedback App is installed, add to your Info.plist:
 4. Feedback App receives token and links the device
 5. User can now manage feedback from your app
 
+## Architecture
+
+See [ARCHITECTURE.md](ARCHITECTURE.md) for C4 diagrams showing the SDK structure and data flows.
+
 ## License
 
 MIT License
