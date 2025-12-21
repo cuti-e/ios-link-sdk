@@ -24,6 +24,11 @@ public final class CutiELink {
     private var baseURL = "https://api.cuti-e.com"
     private let deviceIdLock = NSLock()
 
+    /// URLSession with certificate pinning enabled
+    private lazy var pinnedSession: URLSession = {
+        CutiELinkCertificatePinning.shared.createPinnedSession()
+    }()
+
     /// Configure CutiELink with your App ID (recommended)
     /// - Parameters:
     ///   - appId: Your App ID from the admin dashboard (created in Settings > Apps)
@@ -163,7 +168,7 @@ public final class CutiELink {
 
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
 
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await pinnedSession.data(for: request)
 
         guard let httpResponse = response as? HTTPURLResponse else {
             throw CutiELinkError.invalidResponse
